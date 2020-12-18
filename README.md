@@ -6,6 +6,10 @@ Great description of the competition can be found in the official competition we
 
 This will be my first attempt at write ups, so any suggestions let me know! Here is my discord Franfrancisco9 #0105
 
+List of the categories and challenges I solved:
+- [!Sanity Check](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md/!Sanity_Check)
+    - [Merry Christmas!](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md/Merry_Christmas!_(5/5_Points))
+
 *Note: For every challenge I will present the points they had at the end of the competition / the points at the begginning as the platform adjusted the difficulty according to how many teams have solved the challenge*
 
 *Note 2: For every challenge I will give my personall evaluation of difficulty*
@@ -73,6 +77,11 @@ Flag was **X-MAS{Anna_from_marketing_has_a_new_boyfriend-da817c7129916751}**
 Difficulty:  *Easy* 
 
 I felt like this was a pretty standart and easy challenge, which also showed me the importance of starting to identify the most common types of encoding
+
+
+
+
+
 
 
 
