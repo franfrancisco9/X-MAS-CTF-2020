@@ -9,7 +9,7 @@ This will be my first attempt at write ups, so any suggestions let me know! Here
 List of the categories and challenges I solved:
 - !Sanity Check
     - [Merry Christmas!](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#merry-christmas-55-points)
-    - [The place where all the elves hang out](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#The-place-where-all-the-elves-hang-55-Points)
+    - [The place where all the elves hang out](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#the-place-where-all-the-elves-hang-out--55-points)
 - Forensics
     - [Conversation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#conversation-2650-points)
 
