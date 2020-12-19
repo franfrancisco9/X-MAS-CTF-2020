@@ -108,6 +108,19 @@ That number is 10, as 10 x 1000 = 10 000, 10 000 x 10 = 100 000, 100 000 x 10 = 
 
 Joining 10 with j (does not matter if it is -10j or 10j) we will get to the 10 million and obtain the flag:
 
+![PMB flag](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/PMB/PMB_flag.png)
+
+Flag was **X-MAS{th4t_1s_4n_1nt3r3st1ng_1nt3r3st_r4t3-0116c512b7615456}**
+
+Difficulty:  *Easy*
+
+
+Great challenge that shows importance of reading descriptions carefully!
+
+
+
+
+
 
 
 
