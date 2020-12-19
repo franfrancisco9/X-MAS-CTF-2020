@@ -7,11 +7,11 @@ Great description of the competition can be found in the official competition we
 This will be my first attempt at write ups, so any suggestions let me know! Here is my discord Franfrancisco9 #0105
 
 List of the categories and challenges I solved:
-- [!Sanity Check](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md#!Sanity-Check)
+- [!Sanity Check](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md#sanity-Check)
     - [Merry Christmas!](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#merry-christmas-55-points)
     - [The place where all the elves hang out](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#The-place-where-all-the-elves-hang-55-Points)
-- [Forensics](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md#Forensics)
-    - [Conversation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#Conversation-2650-points)
+- [Forensics](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md#forensics)
+    - [Conversation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#conversation-2650-points)
 
 *Note: For every challenge I will present the points they had at the end of the competition / the points at the begginning as the platform adjusted the difficulty according to how many teams have solved the challenge*
 
@@ -80,6 +80,34 @@ Flag was **X-MAS{Anna_from_marketing_has_a_new_boyfriend-da817c7129916751}**
 Difficulty:  *Easy* 
 
 I felt like this was a pretty standart and easy challenge, which also showed me the importance of starting to identify the most common types of encoding
+
+## Miscellaneous
+
+#### **PMB (50/50 Points)**
+>Author: Yakuhito
+
+![Image of PMB description](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/PMB/PMB_description.png)
+
+This challenge was really all about the nuances in the different descriptions. After connecting with the given IP you would be greeted by this menu:
+
+![Image of PMB Menu](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/PMB/PMB_menu.png)
+
+They tell us our number cannot have a modulus higher or equal to 100 and that it can ***any*** number ( this will be important). I started with some basic tests:
+
+>Interest: 1
+
+![PMB months](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/PMB/PMB_months.png)
+
+So it seems that is a simple multiplication process each month, the problem is we cannot have any positive value until the last month.
+
+That is where the ***any*** so strongly written importance appears, as it is sopposed to remind us that you can also use complex numbers! They also have a modulus to respect but they have this great thing where for z = a + bj if we have a = 0 and b = 1, then we have j
+
+And j^2 = -1, and -1j = -j and -j^2 = 1, which means we just need to use a certain b with j that gets us to the required 10 million
+
+That number is 10, as 10 x 1000 = 10 000, 10 000 x 10 = 100 000, 100 000 x 10 = 1 000 000 and 10 x 1 000 000 = 10 000 000 000
+
+Joining 10 with j (does not matter if it is -10j or 10j) we will get to the 10 million and obtain the flag:
+
 
 
 
