@@ -20,7 +20,7 @@ List of the categories and challenges I solved:
 *Note 2: For every challenge I will give my personall evaluation of difficulty*
 
 ## !Sanity Check
->Introdutory category and just for fun 
+>Introductory category and just for fun 
 
 
 #### **Merry Christmas! (5/5 Points)**
@@ -48,7 +48,7 @@ Flag was **X-MAS{Alr1gh7_50_W3_g07_734_b15cui75_4nd_7h3_w4rm357_w1n73r_50ck5_w3_
 
 We were given a file called *logs.pcapng*, and being new to CTF competitions I followed all the introductory steps you can find online when dealing with any file, being one of them of course the strings function.
 
-Uppong calling the strings function, after some scrolling you could found the folling sequence of readable text:
+Uppon calling the strings function, after some scrolling you could found the folling sequence of readable text:
 >Hello there, yakuhito
 
 >Hello, John! Nice to hear from you again. It's been a while.
@@ -119,6 +119,38 @@ Difficulty:  *Easy*
 
 Great challenge that shows importance of reading descriptions carefully!
 
+#### **Bobi's Whacked (50/50 Points)**
+>Author: Bobi
+
+For this challenge we start with nothing else but this line:
+
+![Bobis description](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/Bobi's%20Whacked/Bobis_Whacked_Description.png)
+
+This suggests this is an OSINT challenge, meaning we have to look for clues online, usually in social media or other available websites, and try to follow clues or hints for the information we want.
+
+In this case I immediatly looked the name *Bobi whack* and found one channel on the name *Bobi's wHack*. 
+
+The reason i immediatly went for youtube is because the description mentions *caption* which is a usual word for subtitles.
+
+4 videos showed to have captions inserted by the channel owner. By clicking on the video and choosing the transcript option I got to text bits:
+
+>X-MAS{nice_thisisjustthefirstpart
+
+>_congrats}
+
+I tested to submit *X-MAS{nice_thisisjustthefirstpart_congrats}* but it did not work, meaning there is probably a middle section missing.
+
+When checking the channel, I found the following sequence in the *about* section:
+
+>6D6964646C6570617274
+
+Using cyber chef we got from hex decoding the word *middlepart*
+
+Flag was **X-MAS{nice_thisisjustthefirstpart_middlepart__congrats}**
+
+Difficulty:  *Easy*
+
+Great challenge overall
 
 
 
