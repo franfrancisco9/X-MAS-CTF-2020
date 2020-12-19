@@ -7,10 +7,10 @@ Great description of the competition can be found in the official competition we
 This will be my first attempt at write ups, so any suggestions let me know! Here is my discord Franfrancisco9 #0105
 
 List of the categories and challenges I solved:
-- [!Sanity Check](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md#sanity-Check)
+- !Sanity Check
     - [Merry Christmas!](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#merry-christmas-55-points)
     - [The place where all the elves hang out](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#The-place-where-all-the-elves-hang-55-Points)
-- [Forensics](https://github.com/franfrancisco9/X-MAS-CTF-2020/edit/main/README.md#forensics)
+- Forensics
     - [Conversation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#conversation-2650-points)
 
 *Note: For every challenge I will present the points they had at the end of the competition / the points at the begginning as the platform adjusted the difficulty according to how many teams have solved the challenge*
