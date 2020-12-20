@@ -192,33 +192,34 @@ All about looking for the description references!
 
 The challenge had the following description:
 
->I see you're eager to prove yourself, why not try your luck with this problem?
+    I see you're eager to prove yourself, why not try your luck with this problem?
 
->Target: nc challs.xmas.htsp.ro 6051
+    Target: nc challs.xmas.htsp.ro 6051
 
-When you connected to the given address you were greated with a little introduction of how hte challenge works (this will be very similar across all programming challenges):
+    When you connected to the given address you were greated with a little introduction of how hte challenge works 
+    (this will be very similar across all programming challenges):
 
->So you think you have what it takes to be a good programmer?
+    So you think you have what it takes to be a good programmer?
 
->Then solve this super hardcore task:
+    Then solve this super hardcore task:
 
->Given an array print the first k1 smallest elements of the array in increasing order and then the first k2 elements of the array in decreasing order.
+    Given an array print the first k1 smallest elements of the array in increasing order and then the first k2 elements of the array in decreasing order.
 
->You have 50 tests that you'll gave to answer in maximum 45 seconds, GO!
+    You have 50 tests that you'll gave to answer in maximum 45 seconds, GO!
 
->Here's an example of the format in which a response should be provided:
+    Here's an example of the format in which a response should be provided:
 
->1, 2, 3; 10, 9, 8
+    1, 2, 3; 10, 9, 8
 
 After which was the values you had to work with in this format:
 
->Test number: 1/50
+    Test number: 1/50
 
->array = [2, 5, 9, 3, 8]
+    array = [2, 5, 9, 3, 8]
 
->k1 = 2
+    k1 = 2
 
->k2 = 1
+    k2 = 1
 
 It becomes clear we need a script to achieve such a fast order otherwise you do not have time to do all 50 tests, specially because after a certain number the arrays of numbers become way to big.
 
@@ -252,7 +253,7 @@ data = sock.recv(16000)
 # Loop to ensure the 50 tests
 for x in range(51):
 
-    # So I could follow allong
+    # So I could follow along
     print("Test number ", x + 1, '\n')
 
     # Splitting the received data so we only look for the numbers we care about)
@@ -323,11 +324,11 @@ print(data.decode())
 
 After running the code we were greeted with a winning text:
 
->Good, that's right
+    Good, that's right
 
->Those are some was lightning quick reflexes you've got there!
+    Those are some was lightning quick reflexes you've got there!
 
->Here's your flag: X-MAS{th15_i5_4_h34p_pr0bl3m_bu7_17'5_n0t_4_pwn_ch41l}
+    Here's your flag: X-MAS{th15_i5_4_h34p_pr0bl3m_bu7_17'5_n0t_4_pwn_ch41l}
 
 Flag was **X-MAS{th15_i5_4_h34p_pr0bl3m_bu7_17'5_n0t_4_pwn_ch41l}**
 
@@ -335,12 +336,171 @@ Difficulty:  *Medium Easy*
 
 Even though it certainly was one of the easiest, since I was so unfammiliar with python, it took obviously longer than it should, but gave me excellent tools to do the next challenge and made it feel much easier!
 
+#### **Least Greatest (50/50 Points)**
+>Authors: Gabies and Nutu
 
-  
+As mentioned in *Biggest Lowest*, the approach for this challenge was very much similar, the difference being we now wanted to find the number of pairs of numbers *(x.y)* thatd had the given *greates common divisor* and *least common multiple*.
+
+We were given the following description:
+
+    Today in Santa's course in Introduction to Algorithms, Santa told us about the greatest common divisor and the least common multiple.
+    He this gave the following problem as homework and I don't know how to solve it.
+    Can you please help me with it?
+
+    Target: nc challs.xmas.htsp.ro 6050
  
+After connecting to target we had the following introduction:
+  
+    Hey, you there! You look like you know your way with complex alogrithms.
+    There's this weird task that I can't get my head around. It goes something like this:
+    Given two numbers g and l, tell me how many pairs of numbers (x, y) exist such that gcd(x, y) = g and lcm(x, y) = l
+    Also, i have to answer 100 such questions in at most 90 seconds.
+
+So, like I said, the exact same process will be used, but now the format of the numbers is:
+
+    Test number: 1/100                                                                                                       
+    gcd(x, y) = 6272065202853374095609                                                                                       
+    lcm(x, y) = 3724998340170227435504471927 
+
+After some research, I found out that the GCD and LCM are actually easy to interconnect and my first approach was to use the property that 
+*xy = GCD x LCM*, and since x and y will be smaller or equal to the LCM, trying all possible pairs with product equal to *GCD x LCM*.
+Well, it does not surprise that this did not work for the big tests, since numbers get insanely huge.
+
+I had to make it more effiecient, which entailed the need to change algorithm to something much more efficient. After some research I found a lot of websites describing an approach trhough a prime factor method. Here is the idea behind it:
+
+    We know that GCD * LCM = x * y
+    Since GCD is gcd(x, y), both x and y will have GCD as its factor
+    
+    Let X = x/GCD
+    Let Y = y/GCD
+
+    This means GCD(X, Y) = 1
+    We can write, x = GCD * X, x = GCD * Y
+
+    GCD * LCM = GCD * X * GCD * Y
+    X * Y = LCM / GCD
+    
+    So we need all pairs of (X, Y) thats respect gcd(X, Y) = 1 and X*Y = LCM/GCD
+    
+    This is where the prime factors come in, as if we consider p1, p2 up to pk as prime factors of LCM/GCD
+    
+    Then if p1 is present in prime factorization of X then p1
+    can't be present in prime factorization of Y because 
+    gcd(X, Y) = 1.
+    
+    This means each prime factor is either in X or in Y
+    This concludes that the total possible ways to divide all prime 
+    factors among X and Y is 2^k, where LCM/GCD has k distinct 
+    prime factors.
+    
+Whit this in mind this was the final script:
+
+```Python
+
+# Efficient python3 program to count  
+# all pairs with GCD and LCM.  
+
+# A function to find number of distinct  
+# prime factors of a given number n  
+def totalPrimeFactors(n):
+    # To keep track of count
+    count = 0;
+
+    # 2s that divide n
+    if ((n % 2) == 0):
+        count += 1;
+        while ((n % 2) == 0):
+            n //= 2;
+
+            # n must be odd at this point.
+    # So we can skip one element
+    # (Note i = i +2)
+    i = 3;
+    while (i * i <= n):
+
+        # i divides n
+        if ((n % i) == 0):
+            count += 1;
+            while ((n % i) == 0):
+                n //= i;
+        i += 2;
+
+        # This condition is to handle the
+    # case when n is a prime number
+    # greater than 2
+    if (n > 2):
+        count += 1;
+
+    return count;
 
 
+# function to count number
+# of pair with given GCD and LCM
+def countPairs(G, L):
+    if (L % G != 0):
+        return 0;
 
+    div = L // G;
+
+    # answer is 2^totalPrimeFactors(L/G)
+    return (1 << totalPrimeFactors(div));
+
+
+import socket
+
+# connection
+ip = 'challs.xmas.htsp.ro'
+port = 6050
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((ip, port))
+data = sock.recv(8192)
+
+for x in range(101):
+    # So I could follow along
+    print("Test number ", x + 1)
+
+    pairs = 0
+    res = [0, 0]
+
+    # print(data)
+
+    if data.find(b'gcd') != -1:
+        # get the numbers we need
+        numbers = data.split(b'gcd')[-1]
+        dat = numbers.decode()
+        # print(data)
+
+        # we only want the numeric values
+        [res[0], res[1]] = [int(i) for i in dat.split() if i.isdigit()]
+
+        # print(res)
+
+        # iniciate the counting of the pairs
+        pairs = countPairs(res[0], res[1])
+        # print(pairs)
+
+        # prepare the string to send
+        pairs = str(pairs) + '\n'
+
+        # sending the value to input
+        sock.send(pairs.encode())
+
+        # get data for next loop round
+        data = sock.recv(8192)
+
+# this prints the last data that is the flag(x = 101)
+print(data.decode())
+```
+Just run it and we get the winning text:
+
+    Wow, you really know this kind of weird math?
+    Here's your flag: X-MAS{gr347es7_c0mm0n_d1v1s0r_4nd_l345t_c0mmon_mult1pl3_4r3_1n73rc0nn3ct3d}
+    
+Flag was **X-MAS{gr347es7_c0mm0n_d1v1s0r_4nd_l345t_c0mmon_mult1pl3_4r3_1n73rc0nn3ct3d}**
+
+Difficulty:  *Easy*
+
+Thanks to the first programming challenge this one felt much easier and just all about finding an effiecient method to solve the challenge.
 
 
  
