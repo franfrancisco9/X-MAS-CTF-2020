@@ -20,6 +20,8 @@ List of the categories and challenges I solved:
     - [PMB](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#pmb-5050-points)
     - [Bobi's Whacked](https://github.com/franfrancisco9/X-MAS-CTF-2020#bobis-whacked-5050-points)
     - [Whispers of Ascalon](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#whispers-of-ascalon-5050-points)
+- Programming
+    - [Biggest Lowest](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#biggest-lowest-3750-points)
 
 *Note: For every challenge I will present the points they had at the end of the competition / the points at the begginning as the platform adjusted the difficulty according to how many teams have solved the challenge*
 
