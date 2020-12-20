@@ -4,7 +4,11 @@ Personally, I also had the goal of trying to understand how the different types 
 The format of the CTF allowed for just that, specially with the adding of new challenges every other day as well as a good and active community on discord.
 Great description of the competition can be found in the official competition website: <https://xmas.htsp.ro/home>
 
-This will be my first attempt at write ups, so any suggestions let me know! Here is my discord Franfrancisco9 #0105
+I participated alongside [Francisco Rodrigues](https://github.com/ArmindoFlores) and we ended up in 97th.
+
+My teammate did a write up for *Santa's ELF holomorphing machine* (which was one of the most interessing and fun challenges in my opinion, that you can found [here](https://gist.github.com/ArmindoFlores/21bea2dd3e75040115498754f42864c6)
+
+This will be my first attempt at write ups, so any suggestions let me know! Here is my discord *Franfrancisco9 #0105*
 
 List of the categories and challenges I solved:
 - !Sanity Check
@@ -178,6 +182,161 @@ Flag was **X-MAS{GW2MYFAVORITEGAME}**
 Difficulty:  *Easy*
 
 All about looking for the description references!
+
+## Programming
+
+#### **Biggest Lowest (37/50 Points)**
+>Authors: Gabies and Nutu
+
+The challenge had the following description:
+
+>I see you're eager to prove yourself, why not try your luck with this problem?
+
+>Target: nc challs.xmas.htsp.ro 6051
+
+When you connected to the given address you were greated with a little introduction of how hte challenge works (this will be very similar across all programming challenges):
+
+>So you think you have what it takes to be a good programmer?
+
+>Then solve this super hardcore task:
+
+>Given an array print the first k1 smallest elements of the array in increasing order and then the first k2 elements of the array in decreasing order.
+
+>You have 50 tests that you'll gave to answer in maximum 45 seconds, GO!
+
+>Here's an example of the format in which a response should be provided:
+
+>1, 2, 3; 10, 9, 8
+
+After which was the values you had to work with in this format:
+
+>Test number: 1/50
+
+>array = [2, 5, 9, 3, 8]
+
+>k1 = 2
+
+>k2 = 1
+
+It becomes clear we need a script to achieve such a fast order otherwise you do not have time to do all 50 tests, specially because after a certain number the arrays of numbers become way to big.
+
+Being fairly new to python, this was the perfect challenge to learn some of the basics of connections and socket send a receive functions(even though I have been now thought about the wonders and much perks of using pwn). Nonetheless, here was my approach when doing the code, followed by the actual code commented:
+
+    - Setup connection to the address and retrieve all the necessary values
+    
+    - Sort the given numbers from low to high and then high to low
+    
+    - Make the sort only until the specified k1 or k2 elements
+    
+    - Set up the correct form for input ( e.g: 1, 2, 3; 10, 9, 8)
+    
+    - Send the input
+    
+    - Implement loop to do this for the 50 tests
+    
+```python
+import socket
+
+# Connection set up
+ip = 'challs.xmas.htsp.ro'
+port = 6051
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((ip, port))
+
+# Get the first set of data
+data = sock.recv(16000)
+#print(data)
+
+# Loop to ensure the 50 tests
+for x in range(51):
+
+    # So I could follow allong
+    print("Test number ", x + 1, '\n')
+
+    # Splitting the received data so we only look for the numbers we care about)
+    data = data.split(b'array = ')[-1]
+
+    # Take all the symbols connected to numbers and replace with spaces ( this allows us to get all numbers directly)
+    numbers = data.replace(b',', b'')
+    numbers = numbers.replace(b'[', b'')
+    numbers = numbers.replace(b']', b'')
+    dat = numbers.decode()
+
+    # By this point we get an array that contains all the values to order and in the last to slots the k1 and k2 values
+    res = [int(i) for i in dat.split() if i.isdigit()]
+
+    # small test so did not get errors showing up when i made mistakes
+    if len(res) == 0:
+        break
+
+    # I used the sorted function and first did an overall sorting of the array minus the k1 and k2
+    increase = sorted(res[0:len(res)-2])
+
+    # Then I did it again (even though it is already sorted, but only for the first k1 numbers9
+    # There is probably a direct way, but starting with normal sorting this gave back exactly what I wanted
+    increase1 = sorted(increase[0:res[len(res) - 2]])
+
+    # Same process but now we do the reverse order and use k2
+    decrease = sorted(res[0:len(res)-2], reverse = True)
+
+    decrease1 = sorted(decrease[0:res[len(res)-1]], reverse = True)
+
+    # We start the string that will be passed to input
+    str1 = ''
+
+    # this will add the numbers we obtained plus the commas
+    for i in range(len(increase1)):
+        if i != len(increase1) - 1:
+            str1 = str1 + str(increase1[i]) + ',' + ' '
+        else:
+            str1 = str1 + str(increase1[i])
+
+    # Separation between the k1 and k2 orders
+    str1 = str1 + ';'
+
+    # Starts with space
+    str2 = ' '
+
+    # Same process as in k1
+    for i in range(len(decrease1)):
+        if i != len(decrease1) - 1:
+            str2 = str2 + str(decrease1[i]) + ',' + ' '
+        else:
+            str2 = str2 + str(decrease1[i])
+
+    # Adding the \n so at the end of the string it presses enter
+    strfinal = str1 + str2 + '\n'
+
+    #print(strfinal)
+
+    # send the input!
+    sock.send(strfinal.encode())
+
+    # after sending we get the info for the next test in the loop
+    data = sock.recv(16000)
+
+# this prints the last data that is the string (x = 51)
+print(data.decode())
+```
+
+After running the code we were greeted with a winning text:
+
+>Good, that's right
+
+>Those are some was lightning quick reflexes you've got there!
+
+>Here's your flag: X-MAS{th15_i5_4_h34p_pr0bl3m_bu7_17'5_n0t_4_pwn_ch41l}
+
+Flag was **X-MAS{th15_i5_4_h34p_pr0bl3m_bu7_17'5_n0t_4_pwn_ch41l}**
+
+Difficulty:  *Medium Easy*
+
+Even though it certainly was one of the easiest, since I was so unfammiliar with python, it took obviously longer than it should, but gave me excellent tools to do the next challenge and made it feel much easier!
+
+
+  
+ 
+
 
 
 
