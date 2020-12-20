@@ -25,7 +25,7 @@ List of the categories and challenges I solved:
     - [Least Greatest](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#least-greatest-5050-points)
 - Web Exploitation
     - [PHP Master](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#php-master-3350-points)
-    - [Santa's Consolation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#santas-consolation-5050-points)
+    - [Santa's Consolation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#santas-consolation--5050-points)
     
 *Note: For every challenge I will present the points they had at the end of the competition / the points at the begginning as the platform adjusted the difficulty according to how many teams have solved the challenge*
 
