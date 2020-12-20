@@ -23,7 +23,10 @@ List of the categories and challenges I solved:
 - Programming
     - [Biggest Lowest](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#biggest-lowest-3750-points)
     - [Least Greatest](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#least-greatest-5050-points)
-
+- Web Exploitation
+    - [PHP Master](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#php-master-3350-points)
+    - [Santa's Consolation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/README.md#santas-consolation-5050-points)
+    
 *Note: For every challenge I will present the points they had at the end of the competition / the points at the begginning as the platform adjusted the difficulty according to how many teams have solved the challenge*
 
 *Note 2: For every challenge I will give my personall evaluation of difficulty*
@@ -502,6 +505,196 @@ Flag was **X-MAS{gr347es7_c0mm0n_d1v1s0r_4nd_l345t_c0mmon_mult1pl3_4r3_1n73rc0nn
 Difficulty:  *Easy*
 
 Thanks to the first programming challenge this one felt much easier and just all about finding an effiecient method to solve the challenge.
+
+
+## Web Exploitation
+
+#### **PHP MAster (33/50 Points)**
+>Author: Yakuhito
+
+The description was:
+
+    Another one of *those* challenges.
+    Target: http://challs.xmas.htsp.ro:3000/
+
+When we got in the web page we could see the following code:
+
+```php
+<?php
+
+include('flag.php');
+
+$p1 = $_GET['param1'];
+$p2 = $_GET['param2'];
+
+if(!isset($p1) || !isset($p2)) {
+    highlight_file(__FILE__);
+    die();
+}
+
+if(strpos($p1, 'e') === false && strpos($p2, 'e') === false  && strlen($p1) === strlen($p2) && $p1 !== $p2 && $p1[0] != '0' && $p1 == $p2) {
+    die($flag);
+}
+
+?>
+```
+
+I never had any contact with php before, but after some chatting with my colleague and some overall research online, I understood that I need to find the correct values for param1 and param2 ( as they are required as inputs with the *$_GET* function) so that we activated the code part where they give us the flag (*die($flag)*)
+
+The first if segment only checks if the varaibles have any value and are not NULL.
+
+The second if is what we care about as it describes the required relationship between param1 and param2.
+
+The first definition is 
+```php 
+strpos($p1, 'e') === false && strpos($p2, 'e') === false 
+```
+Which basically means that param1 and param2 cannot have the letter e. It is interesting to note that it does not check for ther letter E, which allowed for another solution that I did not consider at the time
+
+Then we have:
+```php 
+strlen($p1) === strlen($p2) && $p1 !== $p2
+```
+So param1 and param2 need to have the same lenght, but their values ( considering the type) have to be different, but then we are told that:
+```php
+ $p1[0] != '0' && $p1 == $p2
+```
+Which tells us that the first character of param1 cannot be 0 and that apprently param1 = param2. This seems to go against what we saw in the above line. However, in php == is different than === and != is different than !==, the two first do not take into account the data type of variables, whereas the second ones do.
+
+Alright, this means we need to get a number that can be represented in two different ways but its value be the same without using e, and make sure both variables have the same lenght, as well param1 not starting with a 0.
+
+There are many options! Here some I got to work:
+
+    param1 = .10 and param2 = 0.1
+    param1 = 1.0 and param2 = 001
+    param1 = 10. and param2 = 010
+    param1 = -0 anda param2 = 00
+
+And like I said, after the competition was over people mentioned that the intend solution was actually to exploit the fact that is does not check for E meaning this also works:
+
+    param1 = 1E2 and param2 = 100
+
+By adding */?param1=1.0&param2=001* to the end of the address or any other solution the flag would appear.
+
+Flag was **X-MAS{s0_php_m4ny_skillz-69acb43810ed4c42}**
+
+Difficulty:  *Medium Easy*
+
+First time working with php, so at first was a bit confused with the particularities of the language, but after some research this challenge was the perfect intro to simple web exploitation.
+
+#### **Santa's consolation  (50/50 Points)**
+>Author: littlewho
+
+This was a very fun challenge that started of with a bit of promoting a website:
+
+    Santa's been sending his regards; he would like to know who will still want to hack stuff after his CTF is over.
+
+    Note: Bluuk is a multilingual bug bounty platform that will launch soon and we've prepared a challenge for you. Subscribe and stay tuned!
+    Target: https://bluuk.io
+
+    PS: The subscription form is not the target :P
+    
+Uppon entering the website you were greeted witha  button that said *Let´s Hack*.
+
+You press it and it says *challenge has been loaded*.
+
+I inspected the page and into to source to find a challenge.js file:
+
+![Santa's Consolation:js](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/Santa's%20Consolation/santa%C2%B4s_consolation_js.png)
+
+So the goal is very much straightfoward:
+
+- find the value of k1
+- go back the steps of bobify function to find the input string
+- put ii in win() function in the console
+
+We are told that k1 does:
+
+- atob(k) which basically means decode from base64
+- split('').reverse().join(''), which means it reverses the result
+
+So we start with:
+
+    MkVUTThoak44TlROOGR6TThaak44TlROOGR6TThWRE14d0hPMnczTTF3M056d25OMnczTTF3M056d1hPNXdITzJ3M00xdzNOenduTjJ3M00xdzNOendYTndFRGY0WURmelVEZjNNRGYyWURmelVEZjNNRGYwRVRNOGhqTjhOVE44ZHpNOFpqTjhOVE44ZHpNOEZETXh3SE8ydzNNMXczTnp3bk4ydzNNMXczTnp3bk13RURmNFlEZnpVRGYzTURmMllEZnpVRGYzTURmeUlUTThoak44TlROOGR6TThaak44TlROOGR6TThCVE14d0hPMnczTTF3M056d25OMnczTTF3M056dzNOeEVEZjRZRGZ6VURmM01EZjJZRGZ6VURmM01EZjFBVE04aGpOOE5UTjhkek04WmpOOE5UTjhkek04bFRPOGhqTjhOVE44ZHpNOFpqTjhOVE44ZHpNOGRUTzhoak44TlROOGR6TThaak44TlROOGR6TThSVE14d0hPMnczTTF3M056d25OMnczTTF3M056d1hPNXdITzJ3M00xdzNOenduTjJ3M00xdzNOenduTXlFRGY0WURmelVEZjNNRGYyWURmelVEZjNNRGYzRVRNOGhqTjhOVE44ZHpNOFpqTjhOVE44ZHpNOGhETjhoak44TlROOGR6TThaak44TlROOGR6TThGak14d0hPMnczTTF3M056d25OMnczTTF3M056d25NeUVEZjRZRGZ6VURmM01EZjJZRGZ6VURmM01EZjFFVE04aGpOOE5UTjhkek04WmpOOE5UTjhkek04RkRNeHdITzJ3M00xdzNOenduTjJ3M00xdzNOendITndFRGY0WURmelVEZjNNRGYyWURmelVEZjNNRGYxRVRNOGhqTjhOVE44ZHpNOFpqTjhOVE44ZHpNOFZETXh3SE8ydzNNMXczTnp3bk4ydzNNMXczTnp3WE94RURmNFlEZnpVRGYzTURmMllEZnpVRGYzTURmeUlUTThoak44TlROOGR6TThaak44TlROOGR6TThkVE84aGpOOE5UTjhkek04WmpOOE5UTjhkek04WlRNeHdITzJ3M00xdzNOenduTjJ3M00xdzNOendITXhFRGY0WURmelVEZjNNRGYyWURmelVEZjNNRGYza0RmNFlEZnpVRGYzTURmMllEZnpVRGYzTURmMUVUTTAwMDBERVRDQURFUg==
+
+Then we use cyberchef to decode from base64 to:
+
+    2ETM8hjN8NTN8dzM8ZjN8NTN8dzM8VDMxwHO2w3M1w3NzwnN2w3M1w3NzwXO5wHO2w3M1w3NzwnN2w3M1w3NzwXNwEDf4YDfzUDf3MDf2YDfzUDf3MDf0ETM8hjN8NTN8dzM8ZjN8NTN8dzM8FDMxwHO2w3M1w3NzwnN2w3M1w3NzwnMwEDf4YDfzUDf3MDf2YDfzUDf3MDfyITM8hjN8NTN8dzM8ZjN8NTN8dzM8BTMxwHO2w3M1w3NzwnN2w3M1w3Nzw3NxEDf4YDfzUDf3MDf2YDfzUDf3MDf1ATM8hjN8NTN8dzM8ZjN8NTN8dzM8lTO8hjN8NTN8dzM8ZjN8NTN8dzM8dTO8hjN8NTN8dzM8ZjN8NTN8dzM8RTMxwHO2w3M1w3NzwnN2w3M1w3NzwXO5wHO2w3M1w3NzwnN2w3M1w3NzwnMyEDf4YDfzUDf3MDf2YDfzUDf3MDf3ETM8hjN8NTN8dzM8ZjN8NTN8dzM8hDN8hjN8NTN8dzM8ZjN8NTN8dzM8FjMxwHO2w3M1w3NzwnN2w3M1w3NzwnMyEDf4YDfzUDf3MDf2YDfzUDf3MDf1ETM8hjN8NTN8dzM8ZjN8NTN8dzM8FDMxwHO2w3M1w3NzwnN2w3M1w3NzwHNwEDf4YDfzUDf3MDf2YDfzUDf3MDf1ETM8hjN8NTN8dzM8ZjN8NTN8dzM8VDMxwHO2w3M1w3NzwnN2w3M1w3NzwXOxEDf4YDfzUDf3MDf2YDfzUDf3MDfyITM8hjN8NTN8dzM8ZjN8NTN8dzM8dTO8hjN8NTN8dzM8ZjN8NTN8dzM8ZTMxwHO2w3M1w3NzwnN2w3M1w3NzwHMxEDf4YDfzUDf3MDf2YDfzUDf3MDf3kDf4YDfzUDf3MDf2YDfzUDf3MDf1ETM0000DETCADER
+    
+And we reverse it:
+
+    REDACTED0000MTE1fDM3fDUzfDY2fDM3fDUzfDY4fDk3fDM3fDUzfDY2fDM3fDUzfDY4fDExMHwzN3w1M3w2NnwzN3w1M3w2OHwxMTZ8Mzd8NTN8NjZ8Mzd8NTN8Njh8OTd8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTIyfDM3fDUzfDY2fDM3fDUzfDY4fDExOXwzN3w1M3w2NnwzN3w1M3w2OHwxMDV8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE1fDM3fDUzfDY2fDM3fDUzfDY4fDEwNHwzN3w1M3w2NnwzN3w1M3w2OHwxMDF8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE1fDM3fDUzfDY2fDM3fDUzfDY4fDEyMnwzN3w1M3w2NnwzN3w1M3w2OHwxMjF8Mzd8NTN8NjZ8Mzd8NTN8Njh8NDh8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE3fDM3fDUzfDY2fDM3fDUzfDY4fDEyMnwzN3w1M3w2NnwzN3w1M3w2OHw5OXwzN3w1M3w2NnwzN3w1M3w2OHwxMTR8Mzd8NTN8NjZ8Mzd8NTN8Njh8OTd8Mzd8NTN8NjZ8Mzd8NTN8Njh8OTl8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTA1fDM3fDUzfDY2fDM3fDUzfDY4fDExN3wzN3w1M3w2NnwzN3w1M3w2OHwxMTB8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTIyfDM3fDUzfDY2fDM3fDUzfDY4fDEwMnwzN3w1M3w2NnwzN3w1M3w2OHwxMDF8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE0fDM3fDUzfDY2fDM3fDUzfDY4fDEwNXwzN3w1M3w2NnwzN3w1M3w2OHw5OXwzN3w1M3w2NnwzN3w1M3w2OHwxMDV8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE2
+    
+Now we have the value that needs to be at the end of bobify, lets start rewinding the bobify function.
+
+We have the btoa function which is encoding to base64, and inside we have the sum of s2 (which comes from our input) and the following string:
+
+    D@\xc0\t1\x03\xd3M4
+    
+If we go back to the obtained k1 string we see that if we decode the first part *REDACTED0000* we obtain:
+
+    D@À	1.ÓM4
+    
+Which means that the rest is our string s2:
+
+    MTE1fDM3fDUzfDY2fDM3fDUzfDY4fDk3fDM3fDUzfDY2fDM3fDUzfDY4fDExMHwzN3w1M3w2NnwzN3w1M3w2OHwxMTZ8Mzd8NTN8NjZ8Mzd8NTN8Njh8OTd8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTIyfDM3fDUzfDY2fDM3fDUzfDY4fDExOXwzN3w1M3w2NnwzN3w1M3w2OHwxMDV8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE1fDM3fDUzfDY2fDM3fDUzfDY4fDEwNHwzN3w1M3w2NnwzN3w1M3w2OHwxMDF8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE1fDM3fDUzfDY2fDM3fDUzfDY4fDEyMnwzN3w1M3w2NnwzN3w1M3w2OHwxMjF8Mzd8NTN8NjZ8Mzd8NTN8Njh8NDh8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE3fDM3fDUzfDY2fDM3fDUzfDY4fDEyMnwzN3w1M3w2NnwzN3w1M3w2OHw5OXwzN3w1M3w2NnwzN3w1M3w2OHwxMTR8Mzd8NTN8NjZ8Mzd8NTN8Njh8OTd8Mzd8NTN8NjZ8Mzd8NTN8Njh8OTl8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTA1fDM3fDUzfDY2fDM3fDUzfDY4fDExN3wzN3w1M3w2NnwzN3w1M3w2OHwxMTB8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTIyfDM3fDUzfDY2fDM3fDUzfDY4fDEwMnwzN3w1M3w2NnwzN3w1M3w2OHwxMDF8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE0fDM3fDUzfDY2fDM3fDUzfDY4fDEwNXwzN3w1M3w2NnwzN3w1M3w2OHw5OXwzN3w1M3w2NnwzN3w1M3w2OHwxMDV8Mzd8NTN8NjZ8Mzd8NTN8Njh8MTE2
+    
+That we know is encoded, so we run from base64 once again and obtain the following:
+
+    115|37|53|66|37|53|68|97|37|53|66|37|53|68|110|37|53|66|37|53|68|116|37|53|66|37|53|68|97|37|53|66|37|53|68|122|37|53|66|37|53|68|119|37|53|66|37|53|68|105|37|53|66|37|53|68|115|37|53|66|37|53|68|104|37|53|66|37|53|68|101|37|53|66|37|53|68|115|37|53|66|37|53|68|122|37|53|66|37|53|68|121|37|53|66|37|53|68|48|37|53|66|37|53|68|117|37|53|66|37|53|68|122|37|53|66|37|53|68|99|37|53|66|37|53|68|114|37|53|66|37|53|68|97|37|53|66|37|53|68|99|37|53|66|37|53|68|105|37|53|66|37|53|68|117|37|53|66|37|53|68|110|37|53|66|37|53|68|122|37|53|66|37|53|68|102|37|53|66|37|53|68|101|37|53|66|37|53|68|114|37|53|66|37|53|68|105|37|53|66|37|53|68|99|37|53|66|37|53|68|105|37|53|66|37|53|68|116
+    
+Now, we look at the line that describes how s2 is obtained:
+
+    const s2=encodeURI(s1).split('').map(c=>c.charCodeAt(0)).join('|');
+
+So we first need to remove the | and replace with a space, then decode from charcode the numbers, and then decode from URL:
+
+Using split('|') and join (' '):
+
+    115 37 53 66 37 53 68 97 37 53 66 37 53 68 110 37 53 66 37 53 68 116 37 53 66 37 53 68 97 37 53 66 37 53 68 122 37 53 66 37 53 68 119 37 53 66 37 53 68 105 37 53 66 37 53 68 115 37 53 66 37 53 68 104 37 53 66 37 53 68 101 37 53 66 37 53 68 115 37 53 66 37 53 68 122 37 53 66 37 53 68 121 37 53 66 37 53 68 48 37 53 66 37 53 68 117 37 53 66 37 53 68 122 37 53 66 37 53 68 99 37 53 66 37 53 68 114 37 53 66 37 53 68 97 37 53 66 37 53 68 99 37 53 66 37 53 68 105 37 53 66 37 53 68 117 37 53 66 37 53 68 110 37 53 66 37 53 68 122 37 53 66 37 53 68 102 37 53 66 37 53 68 101 37 53 66 37 53 68 114 37 53 66 37 53 68 105 37 53 66 37 53 68 99 37 53 66 37 53 68 105 37 53 66 37 53 68 116
+    
+Then From charcode with base 10:
+
+    s%5B%5Da%5B%5Dn%5B%5Dt%5B%5Da%5B%5Dz%5B%5Dw%5B%5Di%5B%5Ds%5B%5Dh%5B%5De%5B%5Ds%5B%5Dz%5B%5Dy%5B%5D0%5B%5Du%5B%5Dz%5B%5Dc%5B%5Dr%5B%5Da%5B%5Dc%5B%5Di%5B%5Du%5B%5Dn%5B%5Dz%5B%5Df%5B%5De%5B%5Dr%5B%5Di%5B%5Dc%5B%5Di%5B%5Dt
+    
+Then decode from url:
+
+    s[]a[]n[]t[]a[]z[]w[]i[]s[]h[]e[]s[]z[]y[]0[]u[]z[]c[]r[]a[]c[]i[]u[]n[]z[]f[]e[]r[]i[]c[]i[]t
+
+And now we continue the process to deconstruct s1 that will give us string s that is our input:
+
+    const s1=s.replace(/4/g,'a').replace(/3/g,'e').replace(/1/g,'i').replace(/7/g,'t').replace(/_/g,'z').split('').join('[]');
+    
+We first do split('[]') and join('')
+
+    santazwisheszy0uzcraciunzfericit
+    
+And now we replace a with 4, e with 3, i with 1, t with 7 and z with _
+
+    s4n74_w1sh3s_y0u_cr4c1un_f3r1c17
+
+And then we could asssume this was the falg since in the code we have
+    
+     return check(x)?"X-MAS{"+x+"}"
+     
+But for good measure if we run in console win("s4n74_w1sh3s_y0u_cr4c1un_f3r1c17") we get
+
+    X-MAS{s4n74_w1sh3s_y0u_cr4c1un_f3r1c17}
+    
+
+Flag was **X-MAS{s4n74_w1sh3s_y0u_cr4c1un_f3r1c17}**
+
+Difficulty:  *Easy*
+
+The great thing about this challenge was to learn to identify different types of enconding, specially in the url decode part where if you did from charcode with base 16( the normal one) you would not obtain a valid url encryption so you had to look for different bases until it looked like the correct one.
+
+That finishes my write ups for this competition, I also colaborated for the solutions of *Many Paths* and *Santa's ELF holomorphing machine*, but they were mainly developed by my colleague.
+
+
+
+
+
+
 
 
  
