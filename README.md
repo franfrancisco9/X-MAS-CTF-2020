@@ -153,7 +153,35 @@ Difficulty:  *Easy*
 
 Great challenge overall
 
+#### **Whispers of Ascalon (50/50 Points)**
+>Author: Bobi
 
+For this challenge the description had the following quote:
+
+>*The one who bears the Magdaer shall curse his people forever after*
+
+As well the following image:
+
+![Whisper os Ascalon](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/Whispers%20of%20Ascalon/Whispers_of_Ascalon.png)
+
+Now, at first this did not called for anything to me, but after some research of the name *Magdaer*, I quickly understood this was part of the game Guild of Wars 2.
+
+All it took was some look around in the Guild Wars Official Wiki (<https://wiki.guildwars2.com/wiki/Main_Page>) to find the so called *New Krytan* alphabet along side a handy translation:
+
+![whispers translation](https://github.com/franfrancisco9/X-MAS-CTF-2020/blob/main/Whispers%20of%20Ascalon/Whispers_of_Ascalon_translation.png)
+
+After that was just getting the flag.
+
+Flag was **X-MAS{GW2MYFAVORITEGAME}**
+
+Difficulty:  *Easy*
+
+All about looking for the description references!
+
+
+
+
+ 
 
 
 
